@@ -16,6 +16,7 @@ class Post extends Model
     /* šie posti pieder vienam lietotājam */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id', 'user_id');
+        //return $this->belongsTo(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 }

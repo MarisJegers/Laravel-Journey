@@ -8,7 +8,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Kaskāde') }}</title>
-
+    <!-- recaptcha-->
+    {{--{!! ReCaptcha::htmlScriptTagJsApi() !!}--}}
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 
@@ -102,7 +103,7 @@
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        {{ __('Izrakstīties') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -116,7 +117,7 @@
             </div>
         </nav>
 
-        <main class="container-fluid p-4 my-1 border">
+        <main class="container-fluid border border-secondary">
             @yield('content')
         </main>
     </div>

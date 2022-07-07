@@ -10011,3 +10011,47 @@ h3 {
     border-color: #dee2e6;
   }
 }
+
+.saite:hover {
+  color: #EA9016;
+}
+
+/* Aktīvs links - oriģināli sarkanā krāsā - active */
+.saite:active {
+  color: #8B98CE;
+}
+/* :hover VIENMĒR pēc :link un :visited
+:active VIENMĒR pēc :hover - pretējā gadījumā nostrādās tikai hover */
+
+/* Linka pārveidošana par pogu */
+.poga:link, .poga:visited {
+  background-color: #2E4131;
+  color: white;
+  padding: 14px 14px;
+  margin: 3px;
+  display: inline-block; /* Attēlos linkus kā blokus ar margin augšā un apakšā, bet visus vienā līnijā */
+  text-align: center; /* Izlīdzina tekstu uz elementa centru (horizontāli) */
+  text-decoration: none; /* Teksta noformējums. Šoreiz noņems pasvītrojumu */
+  width: 32%; /* 210pxPogas platums */
+  height: 70px; /* Pogas augstums */
+  vertical-align: middle; /* Vertikāli iecentrē bildi/ikonu */
+  /*line-height: 35px;  Teksta līnijas augstums - izmanto, lai vertikāli iecentrētu tekstu */
+
+  /* Noapaļoti stūri */
+  /* border-radius: 10px; /* Noapaļo visus stūrus vienādi */
+  /* border-radius: 50%; /* Noapaļo cik iespējams, lai veidotu elipses vai apļus */
+  border-radius: 3px; /* AuK, AuL, ApL, ApK */
+}
+
+.poga:hover, .poga:active {
+  background-color: #48644D;
+}
+
+.loginbackground{
+  height: 1000px;
+  width: 100%;
+  background-image: url('/image/abst1.jpg');
+  border-color: darkred;
+  background-size: cover;
+  /*opacity: 0.5;*/
+}

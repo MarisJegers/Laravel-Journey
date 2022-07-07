@@ -1,4 +1,4 @@
-@extends('posts.layout')
+@extends('layouts.app')
   
 @section('content')
 <div class="row">
@@ -22,7 +22,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="form-group">
                 <strong>Autors:</strong>
-                {{ $post->user_id }}
+                {{ $post->user->name }}
             </div>
         </div>
     </div>

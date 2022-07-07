@@ -72,7 +72,7 @@ class TravelitineraryController extends Controller
             'total_distance_km' => 'required|numeric|gt:0',
             'fuel_average' => 'nullable|numeric|gt:0',
             'distance_business' => 'nullable|numeric|gt:0',
-            'distance_private' => 'nullable|numeric|gt:0 ',
+            'distance_private' => 'nullable|numeric|min:0 ',
         ],
     [
         'date_end.required' => 'Laukam jābūt aizpildītam', // šīs ir error message

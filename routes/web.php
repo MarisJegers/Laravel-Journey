@@ -7,6 +7,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\CostcenterController;
 use App\Http\Controllers\JourneyController;
 use App\Http\Controllers\TravelitineraryController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SignatureController;
 use App\Models\Travelitinerary;
 
 /*
@@ -34,6 +36,13 @@ Auth::routes();
 
 // sākuma lapa
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//useru saraksts, pdf eksporta tests
+Route::get('/employees/index', [EmployeeController::class, 'showEmployees'])->name('employees.index');
+Route::get('/employee/pdf', [EmployeeController::class, 'createPDF']);
+Route::get('/employee/edit/{id}', [EmployeeController::class, 'editemployee']);
+Route::post('/employee/update/{id}', [EmployeeController::class, 'updateemployee']);
+Route::get('/employee/delete/{id}', [EmployeeController::class, 'deleteemployee']);
 
 //resursu routspostiem
 Route::resource('posts', PostController::class)->middleware('auth');
@@ -73,3 +82,7 @@ Route::get('/itineraries/search/', [TravelitineraryController::class, 'search'])
 Route::get('journeys/index', [JourneyController::class, 'alljourneys'])->name('journeys.index');
 Route::post('journeys/add', [JourneyController::class, 'addjourneys'])->name('store.journey');
 Route::get('/journey/delete/{id}', [JourneyController::class, 'deletejourney']);
+
+//routi testa signature pad
+Route::get('signatures/signature-pad', [SignatureController::class, 'index'])->name('signatures.index');
+Route::post('signatures/signature-pad', [SignatureController::class, 'store'])->name('signature_pad.store');

@@ -1,12 +1,13 @@
 @extends('layouts.app')
- 
+@section('title', 'Pievienot ceļazīmi')
 @section('content')
 
-
+<!-- ekspriments ar formas skata optimizēšanu -->
 
 <!-- autentificētā lietotāja pēdējā ceļazīme -->
-
-
+<div class="container-fluid">
+<div class="row">
+<div class="col">
             <table class="table table-sm table-hover table-responsive">
               <thead class="thead-light"><!-- tabulas virsraksta rinda -->
                 <tr>
@@ -56,13 +57,17 @@
                       @endforeach
               </tbody>
             </table>
-         
+</div>
+</div> 
+</div>         
 <!-- end autentificētā lietotāja pēdējā ceļazīme-->
-<div class="container">
-<div class="row">
+<!--<div class="container">-->
+<!--<div class="row">-->
 
 <!-- datu pievienošanas forma -->
-
+<div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-10">
             <div class="card">
               <!-- ieraksta pievienošanas gadījuā, izleks paziņojums, ka tas veiksmīgi izdarīts -->
               @if(session('success'))
@@ -74,121 +79,148 @@
               <div class="card-header"> <h4>Pievienot ceļazīmi</h4> </div>
                 <div class="card-body">
                   
-                  <form action="{{route('store.itinerary')}}" method="POST">
-                    @csrf
-                    
-                    <div class="form-group">
-                        <label for="user_id" class="form-label">Vadītājs</label>
-                        <input type="text" name="user_id" class="form-control" id="user_id" value="{{Auth::user()->name}}">
-                        @error('user_id')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                      </div>
+                      <form action="{{route('store.itinerary')}}" method="POST">
+                        @csrf 
+                        
+                          <div class="form-group row border border-secondary">
+                            <div class="col-md-2">
+                              <label for="user_id" class="form-label">Vadītājs</label>
+                              <input type="text" name="user_id" class="form-control border border-dark bg-light" id="user_id" value="{{Auth::user()->name}}">
+                              @error('user_id')
+                              <span class="text-danger">{{ $message }}</span>
+                              @enderror
+                            </div>
+                        
+                        
+                        <div class="col-md-2">
+                            <label for="car_id" class="form-label">Izvēlies auto</label>
+                            <select class="form-control border border-dark" name="car_id" id="car_id">
+                                @foreach($car as $c)
+                                  <option value="{{ $c->id }}">{{$c->reg_nr}}</option>
+                                @endforeach
+                            </select>
+                            @error('car_id')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <!--</div>-->
+                        <!--<div class="form-group row">-->
+                        <div class="col-auto">
+                            <label for="ti_nr" class="form-label">Ceļazīmes numurs (Izveidojas automātiski. NAV jāaizpilda)</label>
+                            <input type="text" name="ti_nr" class="form-control border border-dark" id="ti_nr" aria-describedby="emailHelp" readonly>
+                            <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>
+                        </div>
+                        </div>
+                        
+                        <div class="form-group row border border-secondary">
+                          <div class="col-auto">
+                              <label for="date_start" class="form-label">Perioda sākuma datums</label>
+                              <input type="date" name="date_start" class="form-control border border-dark bg-light" id="date_start" onblur="concatan()" aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">Izvēlies no kalendāra!</div>
+                              @error('date_start')<!-- ja validācija dod kļūdu -->
+                              <span class="text-danger">{{ $message }}</span>
+                              @enderror
+                          </div>
+                        
+                          <div class="col-auto">
+                            <label for="date_end" class="form-label">Perioda beigu datums</label>
+                            <input type="date" name="date_end" class="form-control border border-dark bg-light" id="date_end" aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">Izvēlies no kalendāra!</div>
+                            @error('date_end')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
+                        </div>
+                        
+                        <div class="form-group row border border-secondary">
+                        <div class="col-md-3">
+                            <label for="odo_start" class="form-label">Odometrs perioda sākumā</label>
+                            <input type="number" name="odo_start" class="form-control border border-dark bg-light" id="odo_start" aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">Lūdzu, ievadiet veselu, pozitīvu skaitli!</div>
+                            @error('odo_start')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                    <div class="form-group">
-                        <label for="car_id" class="form-label">Izvēlies auto</label>
-                        <select class="form-control" name="car_id" id="car_id">
-                            @foreach($car as $c)
-                              <option value="{{ $c->id }}">{{$c->reg_nr}}</option>
-                            @endforeach
-                        </select>
-                        @error('car_id')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+                        <div class="col-md-3">
+                            <label for="odo_end" class="form-label">Odometrs perioda beigās</label>
+                            <input type="number" name="odo_end" class="form-control border border-dark bg-light" id="odo_end" 
+                            aria-describedby="emailHelp" onblur="totaldistance()">
+                            <div id="emailHelp" class="form-text">Lūdzu, ievadiet veselu, pozitīvu skaitli!</div>
+                            @error('odo_end')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                    <div class="form-group">
-                        <label for="ti_nr" class="form-label">Ceļazīmes numurs (Izveidojas automātiski. NAV jāaizpilda )</label>
-                        <input type="text" name="ti_nr" class="form-control" id="ti_nr" aria-describedby="emailHelp" readonly>
-                        <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>
-                    </div>
-                    
-                    <div class="form-group row">
-                      <div class="col">
-                          <label for="date_start" class="form-label">Perioda sākuma datums</label>
-                          <input type="date" name="date_start" class="form-control" id="date_start" onblur="concatan()">
-                          @error('date_start')<!-- ja validācija dod kļūdu -->
-                          <span class="text-danger">{{ $message }}</span>
-                          @enderror
-                      </div>
-                    
-                      <div class="col">
-                        <label for="date_end" class="form-label">Perioda beigu datums</label>
-                        <input type="date" name="date_end" class="form-control" id="date_end" >
-                        @error('date_end')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                    <div class="col">
-                        <label for="odo_start" class="form-label">Odometrs perioda sākumā</label>
-                        <input type="number" name="odo_start" class="form-control" id="odo_start" aria-describedby="emailHelp">
-                        <div id="emailHelp" class="form-text">Lūdzu, ievadiet veselu, pozitīvu skaitli!</div>
-                        @error('odo_start')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+                        <div class="col-auto">
+                            <label for="total_distance_km" class="form-label">Nobrauktie kilometri (aprēķins notiek fonā)</label>
+                            <input type="number" name="total_distance_km" class="form-control border border-dark bg-light" id="total_distance_km" aria-describedby="emailHelp" readonly >
+                            <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>
+                            @error('total_distance_km')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
 
-                    <div class="col">
-                        <label for="odo_end" class="form-label">Odometrs perioda beigās</label>
-                        <input type="number" name="odo_end" class="form-control" id="odo_end" 
-                        aria-describedby="emailHelp" onblur="totaldistance()">
-                        <div id="emailHelp" class="form-text">Lūdzu, ievadiet veselu, pozitīvu skaitli!</div>
-                        @error('odo_end')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    </div>
+                        </div>
 
-                    <div class="form-group">
-                      <label for="total_fuel_l" class="form-label">Izlietotā degviela (l)</label>
-                      <input type="number" name="total_fuel_l" class="form-control" id="total_fuel_l" step="any" 
-                      aria-describedby="emailHelp" onblur="avgfuel()">
-                      <div id="emailHelp" class="form-text">Lūdzu, ievadiet veselu, pozitīvu skaitli!</div>
-                      @error('total_fuel_l')
-                      <span class="text-danger">{{ $message }}</span>
-                      @enderror
-                    </div>
+                        <div class="form-group row border border-secondary">
 
-                    <div class="form-group">
-                      <label for="total_distance_km" class="form-label">Nobrauktie kilometri (aprēķins notiek fonā)</label>
-                      <input type="number" name="total_distance_km" class="form-control" id="total_distance_km" aria-describedby="emailHelp" readonly >
-                      <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>
-                      @error('total_distance_km')
-                      <span class="text-danger">{{ $message }}</span>
-                      @enderror
-                    </div>
+                          <div class="col-auto">
+                            <label for="fuel_leftover" class="form-label">Sākuma atlikums (l)</label>
+                            <input type="number" name="fuel_leftover" class="form-control border border-dark bg-light" id="fuel_leftover" step="any" 
+                            aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">Ievadiet veselu, pozitīvu skaitli!</div>
+                          </div>
 
-                    <div class="form-group">
-                      <label for="fuel_average" class="form-label">Aprēķinātais vidējais degvielas patēriņš (l/100 km)</label>
-                      <input type="number" name="fuel_average" class="form-control" step="any" id="fuel_average" aria-describedby="emailHelp" readonly>
-                      <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>
-                    </div>
+                          <div class="col-auto">
+                            <label for="fuel_filled" class="form-label">Ielietā degviela (l)</label>
+                            <input type="number" name="fuel_filled" class="form-control border border-dark bg-light" id="fuel_filled" step="any" 
+                            aria-describedby="emailHelp" onblur="totalfuel()">
+                            <div id="emailHelp" class="form-text">Ievadiet veselu, pozitīvu skaitli!</div>
+                          </div>
 
-                    <div class="form-group">
-                    <label for="distance_business" class="form-label">Darba ietvaros veikto braucienu kopējā distance</label>
-                    <input type="number" name="distance_business" class="form-control" id="distance_business" onblur="privatekm()">
-                    </div>
+                          <div class="col-auto">
+                            <label for="total_fuel_l" class="form-label">Degviela kopā(l)</label>
+                            <input type="number" name="total_fuel_l" class="form-control border border-dark bg-light" id="total_fuel_l" step="any" 
+                            aria-describedby="emailHelp" onblur="avgfuel()">
+                            <div id="emailHelp" class="form-text">Lūdzu, ievadiet veselu, pozitīvu skaitli!</div>
+                            @error('total_fuel_l')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                          </div>
 
-                    <div class="form-group">
-                    <label for="distance_private" class="form-label">Privāto braucienu kopējā distance (aprēķins notiek fonā)</label>
-                    <input type="number" name="distance_private" class="form-control" id="distance_private" aria-describedby="emailHelp">
-                    <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>  
+                          <div class="col-auto">
+                            <label for="fuel_average" class="form-label">Aprēķinātais vidējais degvielas patēriņš (l/100 km)</label>
+                            <input type="number" name="fuel_average" class="form-control border border-dark bg-light" step="any" id="fuel_average" aria-describedby="emailHelp" readonly>
+                            <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>
+                          </div>
+                        </div>
+
+                        <div class="form-group row border border-secondary">
+                          <div class="col-auto">
+                            <label for="distance_business" class="form-label">Darba ietvaros veikto braucienu kopējā distance</label>
+                            <input type="number" name="distance_business" class="form-control border border-dark bg-light" id="distance_business" onblur="privatekm()">
+                          </div>
+
+                          <div class="col-auto">
+                            <label for="distance_private" class="form-label">Privāto braucienu kopējā distance (aprēķins notiek fonā)</label>
+                            <input type="number" name="distance_private" class="form-control border border-dark bg-light" id="distance_private" aria-describedby="emailHelp">
+                            <div id="emailHelp" class="form-text">Ieraksts izveidojas automātiski. Nemainiet to!</div>  
+                          </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Saglabāt</button>
+                        
+                      </form>
+                    </div>
                   </div>
-                    
-                    <button type="submit" class="btn btn-primary">Saglabāt</button>
-                    
-                  </form>
-              
                 </div>
               </div>
             </div>
           
 
             </div>
-</div>
+<!--</div>-->
 
 
 
@@ -230,6 +262,16 @@
     var a8 = a7.toFixed(2);
     document.getElementById('distance_private').value = a8;
    }
+
+  function totalfuel()
+  {
+    var fl = parseFloat(document.getElementById('fuel_leftover').value); 
+    var ff = parseFloat(document.getElementById('fuel_filled').value); 
+    var sum = fl + ff;
+    var total = sum.toFixed(2);
+    document.getElementById('total_fuel_l').value = total;
+  }
+
 
 </script>
 

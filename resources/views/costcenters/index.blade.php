@@ -40,7 +40,7 @@
                         </thead>
                         <!-- te cikls ielasīs datus no BD tabulas -->
                         <tbody>
-                                <!-- @php($i = 1) -->
+                                @php($i = 0)
                                 @foreach ($data as $key => $value)
                           <tr>
                               <td>{{ ++$i }}</td>
@@ -50,14 +50,15 @@
                               <!-- Action pogas labajā malējā kolonā -->
                               <td> 
                               @can('isAdmin')
-                              <a href="{{url('/costcenter/edit/'.$value->id)}}" class="btn btn-secondary btn-sm">Labot</a>
-                              <a href="{{url('/costcenter/delete/'.$value->id)}}" onclick="return confirm('Vai tiešām dzēst?')" class="btn btn-secondary btn-sm">Dzēst</a>
+                              <a href="{{url('/costcenter/edit/'.$value->id)}}" {{--class="btn btn-secondary btn-sm"--}}><img src="{{url('/image/edit-25px.png')}}" alt="Labot"></a>
+                              <a href="{{url('/costcenter/delete/'.$value->id)}}" onclick="return confirm('Vai tiešām dzēst?')" {{--class="btn btn-secondary btn-sm"--}} ><img src="{{url('/image/delete-25px.png')}}" alt="Dzēst"></a>
                               @endcan
                               </td> 
                           </tr> 
                                 @endforeach
                         </tbody>
                       </table>
+                      <br>
 
           {{ $data->links() }} <!--šis, lai strādātu paginate -->
   
